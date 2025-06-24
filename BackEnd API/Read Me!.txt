@@ -1,0 +1,4 @@
+
+**this code should be installed on hotel servers and it should be operated constantly to ensure the connection between the IoT devices and the Database**
+
+*this is a node js code that uses an express js and other libraries*
