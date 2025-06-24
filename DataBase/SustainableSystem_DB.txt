@@ -1,0 +1,170 @@
+SQL query that shows the tables/rooms in the DB :
+
+SELECT name 
+FROM sys.tables; 
+
+/////////
+
+SQL query that shows the content of a specific room :
+
+SELECT * from Room_#  -- *** '#' = Room number *** 
+
+/////////
+
+SSMS function that shows all tables in the DB with there Content : 
+
+DECLARE @tableName NVARCHAR(MAX);
+DECLARE @sql NVARCHAR(MAX);
+
+DECLARE table_cursor CURSOR FOR
+SELECT '[' + s.name + '].[' + t.name + ']'
+FROM sys.tables t
+JOIN sys.schemas s ON t.schema_id = s.schema_id;
+
+OPEN table_cursor;
+FETCH NEXT FROM table_cursor INTO @tableName;
+
+WHILE @@FETCH_STATUS = 0
+BEGIN
+    -- Print table name as a message
+    PRINT '--- Contents of table: ' + @tableName;
+
+    -- Optional: Add table name as a column in each row
+    SET @sql = '
+    SELECT ''' + @tableName + ''' AS TableName, * 
+    FROM ' + @tableName;
+
+    EXEC sp_executesql @sql;
+
+    FETCH NEXT FROM table_cursor INTO @tableName;
+END
+
+CLOSE table_cursor;
+DEALLOCATE table_cursor;
+
+\\\\\\\\\\\\\\\\
+
+
+SSMS code that creates tables based on the number of room exists in the hotel: 
+
+DECLARE @i INT;
+DECLARE @Room# INT;
+DECLARE @sql NVARCHAR(MAX);
+
+SET @i = 1;
+SET @Room# = 20; -- *** SET THE NUMBER OF ROOMS HERE *** 
+
+WHILE @i <= @Room#
+BEGIN
+   
+    SET @sql = N'USE SustainableSystem; CREATE TABLE Room_' + CAST(@i AS NVARCHAR(10)) + N' (
+         readID INT IDENTITY(1,1) PRIMARY KEY,
+        waterValue FLOAT,
+        date DATE,
+        time TIME
+    );';
+
+    
+    EXEC sp_executesql @sql;
+
+    
+    SET @i = @i + 1;
+END
+
+
+\\\\\\\\\\\\\\\\
+
+SSMS code that update the tables for new rooms:
+
+DECLARE @i INT;
+DECLARE @Room# INT;
+DECLARE @sql NVARCHAR(MAX);
+
+SET @i = 21; -- *** SET THE NUMBER OF ROOMS THAT WERE ALREADY INSERTED ***
+SET @Room# = 25; -- *** SET THE NUMBER OF ROOMS YOU WANT TO ADD *** 
+
+WHILE @i <= @Room#
+BEGIN
+   
+    SET @sql = N'USE SustainableSystem; CREATE TABLE Room_' + CAST(@i AS NVARCHAR(10)) + N' (
+         readID INT IDENTITY(1,1) PRIMARY KEY,
+        waterValue FLOAT,
+        date DATE,
+        time TIME
+    );';
+
+    
+    EXEC sp_executesql @sql;
+
+    
+    SET @i = @i + 1;
+END
+
+\\\\\\\\\\\\\\\\\
+
+SSMS code that deletes all the tables you created in SustainableSystem DB **make sure that the Room# value = Room# in the creation of these tables**: 
+
+DECLARE @i INT;
+DECLARE @Room# INT;
+DECLARE @sql NVARCHAR(MAX);
+
+SET @i = 1;
+SET @Room# = 20; -- *** SET THE NUMBER OF ROOMS HERE *** 
+
+WHILE @i <= @Room#
+BEGIN
+    -- Construct the dynamic SQL query to drop the table in the "SustainableSystem" database
+    SET @sql = N'USE SustainableSystem; DROP TABLE IF EXISTS Room_' + CAST(@i AS NVARCHAR(10)) + N';';
+
+    -- Execute the dynamic SQL query
+    EXEC sp_executesql @sql;
+
+    -- Increment the counter
+    SET @i = @i + 1;
+END
+
+
+
+////////////////
+
+Select statement for frontAPI:
+
+DECLARE @startDate DATE = '2025-02-27'; -- Replace with your desired past date
+DECLARE @startTime TIME(0) = '07:00:00'; -- Use TIME(0) to consider hours only
+
+SELECT *
+FROM Room_24
+WHERE
+    (date > @startDate OR (date = @startDate AND time >= @startTime))
+    AND
+    (date < CAST(GETDATE() AS DATE) OR (date = CAST(GETDATE() AS DATE) AND time <= CAST(GETDATE() AS TIME(0))));
+
+
+///////////////
+
+Select statement for backAPI:
+
+ INSERT INTO Room_${roomNum} (waterValue, date, time)
+            VALUES (${waterValue}, '${date}', '${timeOnly}')
+
+//////////////
+
+\\\\\\\\\\\\\\
+
+To connect to an SSMS (SQL Server Management Studio) database using Node.js, you need the following information:
+
+1. Database Server Details
+Host/Server Name – The name or IP address of the SQL Server (e.g., localhost, 127.0.0.1, or MYSERVER\SQLEXPRESS).
+Port – Default SQL Server port is 1433 (unless changed in settings).
+
+
+2. Authentication Credentials
+Username – The database username (if using SQL authentication).
+Password – The corresponding password.
+Authentication Type – Either:
+SQL Server Authentication (requires username and password)
+Windows Authentication (requires trustedConnection: true instead of username/password).
+
+
+3. Database Information
+Database Name – The specific database you want to connect to within the server.
