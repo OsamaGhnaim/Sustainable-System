@@ -1,0 +1,8 @@
+
+**this code should be installed on hotel servers to connect between the frontend(web app.) and the database**
+
+
+*a node js code that uses express js , http and other libraries*
+
+
+**this code helps to ensure the security of SQL queries that been sent to the database beside validating data exchanged between both sides**
