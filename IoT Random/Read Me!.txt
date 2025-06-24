@@ -1,0 +1,14 @@
+
+**this is a prototype code that used to simulate IoT devices that are linked with hotel rooms**
+
+
+**the code sends a random data about room number, water value and time randomly every a preconfigured period of time**
+
+
+**this code used to test the system (white box testing) and the sent data could be manipulated to ensure that the system works as it should**
+
+
+**the code developed using node js**
+
+
+
