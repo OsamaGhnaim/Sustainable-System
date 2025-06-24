@@ -1,0 +1,35 @@
+const { exec } = require('child_process');
+
+let count = 0;
+let startTime = new Date('2025-02-26T14:35:00');
+const interval = 2000; // 2 seconds
+const maxCount = 20;
+
+function getRandomFloat(min, max) {
+  return (Math.random() * (max - min) + min).toFixed(2);
+}
+
+function runCommand() {
+  if (count < maxCount) {
+    const waterValue = getRandomFloat(0 , 70);
+    const time = new Date(startTime.getTime() + count * 60 * 60 * 1000).toISOString(); // to get a time value once every hour 
+    const curlCommand = `curl -X POST "http://localhost:3000/data" -H "Content-Type: application/json" -d "{\\"roomNum\\":14, \\"waterValue\\":${waterValue}, \\"time\\":\\"${time}\\"}"`; // chose the room number here after "roomNum"  
+
+    exec(curlCommand, (error, stdout, stderr) => {
+      if (error) {
+        console.error(`Error: ${error.message}`);
+        return;
+      }
+      if (stderr) {
+        console.error(`Stderr: ${stderr}`);
+        return;
+      }
+      console.log(`Stdout: ${stdout}`);
+    });
+
+    count++;
+    setTimeout(runCommand, interval);
+  }
+}
+
+runCommand();
