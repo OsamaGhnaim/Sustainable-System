@@ -5,7 +5,7 @@
    
    The methodology I followed to solve this problem is to build a system of software and hardware that monitors the water usage by hour for each guest and then apply a certain discount in guest booking price for those who consumed water under a predetermined rate, which will encourage guests to decrease their usage of water.
 
-This project consists of six applications conducted by a full stack development beside the SRS document that has a detailed specification about the project, and here is a brief explanation about each application:
+This project consists of six applications conducted by a full stack development beside the SRS document that has a detailed specification about the project. Here is a brief explanation about each application:
 
 | Application    |  description   | Technology/Tool|
 |----------------|----------------|----------------|
